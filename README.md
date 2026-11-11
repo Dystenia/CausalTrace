@@ -33,10 +33,11 @@ passed on commit `b890074` with port `8080`. It failed on commit `3066d5a`
 after `config.json` changed the port to `9090`.
 
 After importing the Git history and both JUnit reports, the timeline showed
-the passing test as run 3 and the failing test as run 4.
+the passing test as run 3 and the failing test as run 4. The command below
+assumes the demo database is in the current directory.
 
 ```powershell
-causaltrace analyze --project port-demo --run 4 --test 'config::test_port'
+causaltrace --db .\causaltrace.sqlite3 analyze --project port-demo --run 4 --test 'config::test_port'
 ```
 
 Selected lines from the analysis:
