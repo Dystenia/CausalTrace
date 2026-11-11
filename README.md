@@ -26,6 +26,32 @@ You can put `--db PATH` before the subcommand to choose a database. The default
 is `.causaltrace.sqlite3` in your home directory. Use `python -m pip install .`
 if you want the optional installed `causaltrace` entry point.
 
+## Example: A port configuration regression
+
+In a demo repository tested on Windows with Python 3.11, `config::test_port`
+passed on commit `b890074` with port `8080`. It failed on commit `3066d5a`
+after `config.json` changed the port to `9090`.
+
+After importing the Git history and both JUnit reports, the timeline showed
+the passing test as run 3 and the failing test as run 4.
+
+```powershell
+causaltrace analyze --project port-demo --run 4 --test 'config::test_port'
+```
+
+Selected lines from the analysis:
+
+```text
+Observation: config::test_port failed
+AssertionError: 9090 != 8080
+Last known passing run on the same commit or an ancestor:
+Run 3 | 2026-11-11T08:33:10.493173+00:00 | b89007490dae579b70addc403285c7840581df5e
+Changes between tested commits (oldest timestamp first):
+  3066d5a63c3f3937d1002242ccd406912c6e7f42 | Change configured port to 9090
+    config.json
+Commit assignments are supplied at import. Confirmed cause: none.
+```
+
 ## Scope
 
 Git imports the history reachable from the current HEAD. To include another
