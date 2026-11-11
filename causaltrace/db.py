@@ -59,12 +59,17 @@ def save(connection, project, kind, origin, fingerprint, records):
         return len(fresh)
 
 
-def events(connection, project):
+def events(connection, project, *, test_run_id=None):
+    condition = "WHERE e.project=?"
+    parameters = (project,)
+    if test_run_id is not None:
+        condition += " AND e.kind='test_run' AND e.id=?"
+        parameters += (test_run_id,)
     rows = connection.execute(
         "SELECT e.id, e.kind, e.occurred_at, e.payload, s.origin, s.fingerprint "
         "FROM events e JOIN sources s ON s.id=e.source_id "
-        "WHERE e.project=? ORDER BY e.occurred_at, e.id",
-        (project,),
+        f"{condition} ORDER BY e.occurred_at, e.id",
+        parameters,
     )
     return [
         dict(id=event_id, kind=kind, time=time, data=json.loads(payload),

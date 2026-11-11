@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "CausalTrace"
-version = "0.1.0"
+version = "0.2.0"
 description = "Investigate software regressions using Git history and JUnit reports"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,3 +14,9 @@ causaltrace = "causaltrace.__main__:main"
 
 [tool.setuptools]
 packages = ["causaltrace"]
+
+[project.optional-dependencies]
+web = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "jinja2>=3.1,<4"]
+
+[tool.setuptools.package-data]
+causaltrace = ["templates/*.html"]

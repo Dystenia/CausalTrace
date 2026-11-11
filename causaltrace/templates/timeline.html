@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Timeline · CausalTrace{% endblock %}
+{% block main %}
+    <h1>Project timeline</h1>
+    {% if projects %}
+    <form method="get" action="/">
+      <label for="project">Project</label>
+      <select id="project" name="project">
+        {% for key in projects %}
+        <option value="{{ key }}"{% if key == selected %} selected{% endif %}>{{ key }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Show timeline</button>
+    </form>
+    {% endif %}
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% elif not rows %}
+    <p>No imported events. Import Git history or JUnit reports using the CLI.</p>
+    {% else %}
+    <p class="axis">UTC · oldest first</p>
+    <ol aria-label="Project events">
+      {% for row in rows %}
+      {% set is_run = row.kind == "test_run" %}
+      <li{% if is_run and (row.counts.failed or row.counts.error) %} class="failed"{% endif %}>
+        <div class="meta">
+          <span class="kind">{{ "Test run" if is_run else "Git commit" }}</span>
+          <time datetime="{{ row.time }}">{{ row.time }}</time>
+        </div>
+        {% if is_run %}
+        <h2><a href="{{ request.url_for('run_detail', run_id=row.id).include_query_params(project=selected) }}">Run {{ row.id }}</a></h2>
+        <code>{{ row.data.commit }}</code>
+        <p class="counts">
+          {% for status in ("passed", "failed", "error", "skipped") %}
+          {% if row.counts[status] %}
+          <span class="count {{ status }}">{{ row.counts[status] }} {{ status }}</span>
+          {% endif %}
+          {% endfor %}
+          {% if not row.counts %}<span class="count">No test cases</span>{% endif %}
+        </p>
+        {% else %}
+        <h2>{{ row.data.subject or "Untitled commit" }}</h2>
+        <code>{{ row.data.sha }}</code>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CausalTrace{% endblock %}</title>
+  <style>
+    :root { color-scheme: light; font-family: "Instrument Sans", "Segoe UI", sans-serif;
+      color: #152523; background: #f3f6f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { background: #142e2a; color: #e8f4ed; }
+    header div, main { max-width: 56rem; margin: auto; padding: 1rem clamp(1rem, 4vw, 2rem); }
+    header div { font-weight: 700; }
+    h1 { margin: 1rem 0; font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -.04em; }
+    h2 { font-size: 1rem; margin: 0; overflow-wrap: anywhere; }
+    form { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: 1.5rem 0; }
+    label { font-weight: 600; }
+    select, button { font: inherit; padding: .5rem .75rem; border: 1px solid #a4b4ae;
+      border-radius: .4rem; background: #fff; color: inherit; max-width: 100%; }
+    button { background: #185a4d; color: #fff; border-color: #185a4d; cursor: pointer; }
+    :focus-visible { outline: 3px solid #2269a0; outline-offset: 3px; }
+    .axis { color: #4b625b; font-size: .875rem; }
+    ol { list-style: none; margin: 1rem 0 2rem; padding: 0 0 0 1rem; border-left: 2px solid #bdccc5; }
+    li { position: relative; background: #fff; border: 1px solid #d4ded8; border-radius: .6rem;
+      padding: .85rem 1rem; margin-bottom: .75rem; }
+    li::before { content: ""; position: absolute; top: 1.15rem; left: -1.37rem; width: .6rem;
+      height: .6rem; background: #507f71; border-radius: 50%; }
+    li.failed { border-left: 4px solid #a83b30; }
+    li.failed::before { background: #a83b30; left: -1.56rem; }
+    .meta { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .75rem; margin-bottom: .4rem; }
+    time, .kind { font-size: .8rem; color: #405751; }
+    .kind { font-weight: 700; }
+    code, time { font-family: "IBM Plex Mono", Consolas, monospace; overflow-wrap: anywhere; }
+    code { font-size: .85rem; color: #405751; }
+    .counts { display: flex; flex-wrap: wrap; gap: .4rem; margin: .55rem 0 0; }
+    .count { padding: .15rem .45rem; border-radius: .3rem; background: #e8eeeb; font-size: .85rem; }
+    .count.passed { background: #def3e7; color: #195437; }
+    .count.failed, .count.error { background: #fae7e4; color: #82281e; }
+    a { color: #185a4d; text-underline-offset: .18em; }
+    .back { display: inline-block; margin-top: .75rem; }
+    .run-meta { display: grid; grid-template-columns: max-content minmax(0, 1fr);
+      gap: .5rem 1rem; padding: 1rem; background: #fff; border: 1px solid #d4ded8;
+      border-radius: .6rem; margin-bottom: 2rem; }
+    .run-meta dt { font-weight: 600; }
+    .run-meta dd { margin: 0; overflow-wrap: anywhere; }
+    .cases { list-style: none; margin: 1rem 0 2rem; padding: 0; }
+    .cases li::before { content: none; }
+    .case-heading { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+    li.file-path { margin: .35rem 0; padding: 0; border: 0; }
+    li.file-path::before { content: none; }
+    pre { font: .85rem/1.5 "IBM Plex Mono", Consolas, monospace; padding: .8rem;
+      white-space: pre-wrap; overflow-wrap: anywhere; background: #f3f6f4; border-radius: .4rem; }
+    @media (max-width: 32rem) {
+      .run-meta { grid-template-columns: minmax(0, 1fr); }
+      .run-meta dd { margin-bottom: .5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header><div>CausalTrace</div></header>
+  <main>
+    {% block main %}{% endblock %}
+  </main>
+</body>
+</html>

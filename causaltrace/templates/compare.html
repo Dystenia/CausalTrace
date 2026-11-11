@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Run {{ run_id }} comparison · CausalTrace{% endblock %}
+{% block main %}
+    <a class="back" href="{{ request.url_for('run_detail', run_id=run_id).include_query_params(project=project) }}">← Test run {{ run_id }}</a>
+    <h1>Test comparison</h1>
+    <p><code>{{ test }}</code></p>
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% else %}
+    <dl class="run-meta">
+      <dt>Failing run</dt>
+      <dd><a href="{{ request.url_for('run_detail', run_id=failed.id).include_query_params(project=project) }}">Run {{ failed.id }}</a> · <code>{{ failed.data.commit }}</code></dd>
+      <dt>Last passing run</dt>
+      <dd>
+        {% if previous %}
+        <a href="{{ request.url_for('run_detail', run_id=previous.id).include_query_params(project=project) }}">Run {{ previous.id }}</a> · <code>{{ previous.data.commit }}</code>
+        {% else %}
+        No earlier passing run on the same commit or an ancestor.
+        {% endif %}
+      </dd>
+    </dl>
+    {% if previous %}
+    <h2>Changes between tested commits</h2>
+    {% if changes %}
+    <p class="axis">UTC · oldest first</p>
+    <ol aria-label="Candidate commits">
+      {% for change in changes %}
+      <li>
+        <div class="meta"><time datetime="{{ change.time }}">{{ change.time }}</time></div>
+        <h3>{{ change.data.subject or "Untitled commit" }}</h3>
+        <code>{{ change.data.sha }}</code>
+        {% if change.data.parents | length > 1 %}<p>Paths relative to the first parent.</p>{% endif %}
+        {% if change.data.paths %}
+        <ul>
+          {% for path in change.data.paths %}<li class="file-path"><code>{{ path }}</code></li>{% endfor %}
+        </ul>
+        {% else %}
+        <p>No changed paths recorded.</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p>Both runs reference the same commit.</p>
+    {% endif %}
+    {% endif %}
+    <p>Commit assignments are supplied at import. Confirmed cause: none.</p>
+    {% endif %}
+{% endblock %}

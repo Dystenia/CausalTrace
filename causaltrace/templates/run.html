@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Test run {{ run_id }} · CausalTrace{% endblock %}
+{% block main %}
+    <a class="back" href="{{ request.url_for('timeline').include_query_params(project=project) }}">← Project timeline</a>
+    <h1>Test run {{ run_id }}</h1>
+    {% if error %}
+    <p role="alert">{{ error }}</p>
+    {% else %}
+    <dl class="run-meta">
+      <dt>Project</dt><dd>{{ project }}</dd>
+      <dt>Completed (UTC)</dt><dd><time datetime="{{ run.time }}">{{ run.time }}</time></dd>
+      <dt>Commit</dt><dd><code>{{ run.data.commit }}</code></dd>
+      <dt>JUnit report</dt><dd><code>{{ run.origin }}</code></dd>
+      <dt>Report SHA-256</dt><dd><code>{{ run.fingerprint }}</code></dd>
+    </dl>
+
+    <h2>Test cases</h2>
+    {% if run.data.cases %}
+    <ul class="cases">
+      {% for case in run.data.cases %}
+      <li{% if case.status in ("failed", "error") %} class="failed"{% endif %}>
+        <div class="case-heading">
+          <h3><code>{{ case.classname }}::{{ case.name }}</code></h3>
+          <span class="count {{ case.status }}">{{ case.status }}</span>
+        </div>
+        {% if case.details %}<pre>{{ case.details }}</pre>{% endif %}
+        {% if case.status in ("failed", "error") %}
+        <p><a href="{{ request.url_for('run_compare', run_id=run_id).include_query_params(project=project, test=case.classname ~ '::' ~ case.name) }}">Compare with last passing run</a></p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No test cases in this report.</p>
+    {% endif %}
+    {% endif %}
+{% endblock %}

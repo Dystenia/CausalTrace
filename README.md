@@ -1,7 +1,7 @@
 # CausalTrace
 
 CausalTrace is a local Python command-line tool for investigating software regressions.
-Version 0.1 imports Git history and JUnit XML into SQLite, shows a project timeline,
+Version 0.2 imports Git history and JUnit XML into SQLite, shows a project timeline,
 and lists changes between a failing test and an earlier passing run on the same
 commit or an ancestor commit.
 
@@ -65,3 +65,20 @@ The CLI reads the input repository and reports. It stores data in its own
 SQLite database, scoped by project key. It lists candidate changes with source
 references. The comparison cannot establish a cause and does not verify
 whether the test ran against a clean checkout.
+
+## Browser timeline
+
+Install the optional web dependencies from the project directory.
+Point the server at the same SQLite file used for CLI imports.
+
+```powershell
+python -m pip install '.[web]'
+python -m causaltrace.web --db 'C:\Path\to\causaltrace.sqlite3'
+```
+
+Open http://127.0.0.1:8765/ and select a project. The local timeline reads the
+database in read-only mode and shows commits and test-run status counts in UTC.
+Select a run to see its test cases, failure output, tested commit, and JUnit
+report reference. From a failed test, open the comparison to see the last
+known passing run on the same commit or an ancestor, along with the commits
+and file paths between the tested states. Use Ctrl+C to stop the server.

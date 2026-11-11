@@ -19,7 +19,7 @@ def show_run(run):
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="causaltrace")
     parser.add_argument("--db", default=str(Path.home() / ".causaltrace.sqlite3"))
-    parser.add_argument("--version", action="version", version="CausalTrace 0.1.0")
+    parser.add_argument("--version", action="version", version="CausalTrace 0.2.0")
     commands = parser.add_subparsers(dest="command", required=True)
     for command in ("import-git", "import-tests", "timeline", "analyze"):
         commands.add_parser(command).add_argument("--project", required=True)
